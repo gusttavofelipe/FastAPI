@@ -1,11 +1,22 @@
-from typing import Optional
+from typing import Optional, Any
+from time import sleep
 from fastapi.responses import JSONResponse, Response
 from sec03.models import Course
 from fastapi import (
-    FastAPI, HTTPException, Path, Query, Header, status
+    FastAPI, HTTPException, Depends, Path, Query, Header, status
 )
 
 app = FastAPI()
+
+
+def fake_db():
+    try:
+        print('opening database connection...')
+        sleep(1)
+    finally:
+        print('closing database connection...')
+        sleep(1)
+
 
 courses = {
     1: {
@@ -27,12 +38,16 @@ courses = {
 
 
 @app.get('/courses')
-async def get_courses():
-    return courses
+async def get_courses(db: Any = Depends(fake_db)):
+    return courses            
+# Depends adiciona uma dependencia a um recurso
+# (executa algo antes de chamar o recurso)
 
 
 @app.get('/courses/{course_id}')  # todo input vem como str
-async def get_course(course_id: int = Path(
+async def get_course(
+        db: Any = Depends(fake_db),
+        course_id: int = Path(
         default=None, title='Course id',  # title - in the docs
         description='Must be between 1 e 2', gt=0, lt=3)):  # descripition - in the docs
     try:
@@ -47,7 +62,7 @@ async def get_course(course_id: int = Path(
 
 
 @app.post('/courses', status_code=status.HTTP_201_CREATED)
-async def post(course: Course):
+async def post(course: Course, db: Any = Depends(fake_db)):
     course_id = len(courses) + 1
     courses[course_id] = course
     course.id = course_id
@@ -55,7 +70,7 @@ async def post(course: Course):
 
 
 @app.put('/courses/{course_id}')
-async def put(course: Course, course_id: int):
+async def put(course: Course, course_id: int, db: Any = Depends(fake_db)):
     if course_id in courses:
         courses[course_id] = course
         course.id = course_id
@@ -69,7 +84,7 @@ async def put(course: Course, course_id: int):
 
 
 @app.delete('/courses/{course_id}')
-async def delete(course_id: int):
+async def delete(course_id: int, db: Any = Depends(fake_db)):
     if course_id in courses:
         del courses[course_id]
         # return JSONResponse(status_code=status.HTTP_204_NO_CONTENT)
@@ -88,8 +103,8 @@ async def calculate(
     a: int = Query(default=None, gt=5),
     b: int = Query(default=None, gt=10),
     c: Optional[int] = None,
-    x_param: str = Header(default=None)):
-    
+        x_param: str = Header(default=None)):
+
     print(f'x_param: {x_param}')
     values_sum = a + b
     if c:
