@@ -2,7 +2,7 @@ from typing import Optional
 from fastapi.responses import JSONResponse, Response
 from sec03.models import Course
 from fastapi import (
-    FastAPI, HTTPException, Path, Query, status
+    FastAPI, HTTPException, Path, Query, Header, status
 )
 
 app = FastAPI()
@@ -80,15 +80,17 @@ async def delete(course_id: int):
             detail=f'course with id {course_id} not exists'
         )
 
-# -------------------------------------------------------------------------------------------------------------------------------
-# Query parameters
+
+# Query and Header parameters
 
 @app.get('/calculator')
 async def calculate(
     a: int = Query(default=None, gt=5),
     b: int = Query(default=None, gt=10),
-    c: Optional[int] = None):
+    c: Optional[int] = None,
+    x_param: str = Header(default=None)):
     
+    print(f'x_param: {x_param}')
     values_sum = a + b
     if c:
         values_sum += c
