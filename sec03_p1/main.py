@@ -17,10 +17,10 @@ app = FastAPI(
 def fake_db():
     try:
         print('opening database connection...')
-        sleep(1)
+        # sleep(1)
     finally:
         print('closing database connection...')
-        sleep(1)
+        # sleep(1)
 
 
 @app.get(
@@ -59,9 +59,9 @@ async def get_course(
     description='add a course in the dictionary',
     response_model=list[dict])
 async def post(course: Course, db: Any = Depends(fake_db)):
-    course_id = len(courses) + 1
-    courses[course_id] = course
-    course.id = course_id
+    next_id = len(courses) + 1
+    course.id = next_id
+    courses.append(course)
     return course
 
 
