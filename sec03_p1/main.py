@@ -1,7 +1,7 @@
 from typing import Optional, Any
 from time import sleep
 from fastapi.responses import JSONResponse, Response
-from sec03.models import Course, courses
+from sec03_p1.models import Course, courses
 from fastapi import (
     FastAPI, HTTPException, Depends, Path, Query, Header, status
 )
