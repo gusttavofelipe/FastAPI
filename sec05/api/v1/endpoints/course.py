@@ -38,7 +38,7 @@ async def get_courses(db: AsyncSession = Depends(get_session)):
 
 
 # GET COURSE
-@router.get('/{course_id}', response_model=CourseModel, status_code=status.HTTP_200_OK)
+@router.get('/{course_id}', response_model=CourseModel)
 async def get_courses(course_id: int, db: AsyncSession = Depends(get_session)):
     async with db as session:
         query = select(CourseModel).filter(CourseModel.id == course_id)
