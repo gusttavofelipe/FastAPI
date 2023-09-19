@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from jose import jwt
 
-# from models.user_model import UserModel
+from models.user_model import UserModel
 from core.configs import settings
 from core.security import verify_password
 
