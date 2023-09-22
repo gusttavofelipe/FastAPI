@@ -16,4 +16,4 @@ def generate_password_hash(password: str) -> str:
     '''
     funcao que gera e retorna o hash da password
     '''
-    return CRYPTO.verify(password)
+    return CRYPTO.hash(password)

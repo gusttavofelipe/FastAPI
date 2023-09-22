@@ -38,7 +38,7 @@ def _create_token(token_type: str, lifetime: timedelta, sub: str) -> str:
     expires = datetime.now(tz=sp) + lifetime
 
     payload['type'] = token_type
-    payload['exp'] = lifetime
+    payload['exp'] = expires
 
     # quando foi gerado
     payload['iat'] = datetime.now(tz=sp)

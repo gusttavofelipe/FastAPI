@@ -45,7 +45,7 @@ async def get_articles(
 
 
 # GET ARTICLES
-@router.get('/{article_od}')
+@router.get('/{article_id}')
 async def get_articles(
         article_id: int, db: AsyncSession = Depends(get_session)
 ) -> ArticleSchema:

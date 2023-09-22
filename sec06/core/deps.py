@@ -15,11 +15,11 @@ class TokenData(BaseModel):
 
 
 async def get_session() -> Generator:
-    Session: AsyncSession = Session()
+    session: AsyncSession = Session()
     try:
-        yield Session
+        yield session
     finally:
-        await Session.close()
+        await session.close()
 
 
 async def get_current_user(

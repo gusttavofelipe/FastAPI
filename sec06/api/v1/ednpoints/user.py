@@ -11,6 +11,7 @@ from schemas.user_schema import (
 from core.deps import get_session, get_current_user
 from core.security import generate_password_hash
 from core.auth import autenticate, _create_token_acess
+from sqlalchemy.exc import IntegrityError
 
 
 router = APIRouter()
@@ -30,10 +31,16 @@ async def post_user(user: UserSchemaCreate, db: AsyncSession = Depends(get_sessi
         password=generate_password_hash(user.password), is_admin=user.is_admin
     )
     async with db as session:
-        session.add(new_user)
-        await session.commit()
+        try:
+            session.add(new_user)
+            await session.commit()
 
-        return new_user
+            return new_user
+        except IntegrityError:
+            raise HTTPException(
+                status_code=status.HTTP_406_NOT_ACCEPTABLE,
+                detail='email already exists'
+            )
 
 
 @router.get('/')
@@ -112,7 +119,7 @@ async def delete_user(user_id: int, db: AsyncSession = Depends(get_session)):
         )
 
 
-@router.post('/loging')
+@router.post('/login')
 async def login_user(
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: AsyncSession = Depends(get_session)
